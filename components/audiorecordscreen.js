@@ -34,7 +34,7 @@ const AudioRecordScreen = () => {
         try {
         const { sound, status } = await Audio.Sound.createAsync(
             {
-            uri: 'https://samplelib.com/lib/preview/mp3/sample-12s.mp3',
+            uri: 'https://github.com/rishitha957/test-repo/blob/master/audio1.mp3?raw=true',
             }
         );
         setSound(sound);
