@@ -88,8 +88,8 @@ const AudioRecordScreen = () => {
   };
 
       const scoreImages = [
-        // 'https://github.com/rishitha957/rated-g.ai-info/assets/46604699/fdc8f05c-e1d4-469a-8717-0838a213e8ef',
-        'https://github.com/rishitha957/rated-g.ai-info/assets/46604699/bf625a15-d998-43e7-b146-d96055a64ced',
+        'https://github.com/rishitha957/rated-g.ai-info/assets/46604699/fdc8f05c-e1d4-469a-8717-0838a213e8ef',
+        // 'https://github.com/rishitha957/rated-g.ai-info/assets/46604699/bf625a15-d998-43e7-b146-d96055a64ced',
         // 'https://github.com/rishitha957/rated-g.ai-info/assets/46604699/5a4b1eb2-d01a-4116-b5bd-58e98df7f38f',
         // 'https://github.com/rishitha957/rated-g.ai-info/assets/46604699/28268044-212e-4531-afbb-e861c06d1079',
         // ... more URIs for each score image
