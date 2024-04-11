@@ -1,63 +1,102 @@
-import React from 'react';
-import { useEffect, useState } from 'react';
-import { Audio } from 'expo-av';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { Audio } from 'expo-av';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import MusicScoreView from './MusicScoreView';
-// import AudioPlayerComponent from './AudioPlayerComponent';
 
 const AudioRecordScreen = () => {
+  const [sound, setSound] = useState();
+  const [recording, setRecording] = useState();
+  const [recordedAudio, setRecordedAudio] = useState();
 
-    const onPressPlaceholder = () => {
+  useEffect(() => {
+    Audio.setAudioModeAsync({
+      allowsRecordingIOS: true,
+      playsInSilentModeIOS: true,
+      interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+      shouldDuckAndroid: true,
+      interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+      playThroughEarpieceAndroid: false,
+    });
+  }, []);
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          console.log('Unloading Sound');
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
+
+      const onPressPlaceholder = () => {
         console.log('Button pressed');
     };
-    const [sound, setSound] = useState();
-  // This useEffect — fixes the bug you've encountered on iOS. Does work on normal sim 
-  // but can't figure out how to turn up volume here in the snack for iOS sim
-    useEffect(() => {
-        Audio.setAudioModeAsync({
+
+  const playSound = async () => {
+    console.log('Loading Sound');
+    const { sound: newSound } = await Audio.Sound.createAsync(
+      { uri: 'https://github.com/rishitha957/test-repo/blob/master/audio1.mp3?raw=true' },
+      { shouldPlay: true }
+    );
+    setSound(newSound);
+  };
+
+  const startRecording = async () => {
+    try {
+      console.log('Requesting permissions..');
+      await Audio.requestPermissionsAsync();
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
-        });
-    }, []);
+      });
+      console.log('Starting recording..');
+      const recording = new Audio.Recording();
+      await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
+      await recording.startAsync();
+      setRecording(recording);
+      console.log('Recording started');
+    } catch (err) {
+      console.error('Failed to start recording', err);
+    }
+  };
 
-    // Unload the song on clean up
-    useEffect(() => {
-        return sound
-        ? () => {
-            console.log('Unloading Sound');
-            sound.unloadAsync();
-            }
-        : undefined;
-    }, [sound]);
+  const stopRecording = async () => {
+    console.log('Stopping recording..');
+    setRecording(undefined);
+    // setSound(undefined);
+    await recording.stopAndUnloadAsync();
+    // await newSound.stopAndUnloadAsync();
+    const uri = recording.getURI();
+    setRecordedAudio({ uri });
+    console.log('Recording stopped and stored at', uri);
+    if (sound) {
+      console.log('Stopping background music..');
+      await sound.stopAsync();
+      await sound.unloadAsync(); // Optional: Unload the sound from memory if you're done with it
+      setSound(undefined);
+    }
+  };
 
-    const playSound = async () => {
-        try {
-        const { sound, status } = await Audio.Sound.createAsync(
-            {
-            uri: 'https://github.com/rishitha957/test-repo/blob/master/audio1.mp3?raw=true',
-            }
-        );
-        setSound(sound);
+  const playRecordedAudio = async () => {
+    console.log('Playing recorded audio', recordedAudio.uri);
+    const { sound: playbackSound } = await Audio.Sound.createAsync(
+      { uri: recordedAudio.uri },
+      { shouldPlay: true }
+    );
+    playbackSound.playAsync();
+  };
 
-        await sound.getStatusAsync();
-        await sound.playAsync();
-        console.log('Playing Sound', status);
-        } catch (err) {
-        console.log(err, 'the err - bad url e.g.');
-        }
-    };
-    // const audioPlayer = AudioPlayerComponent({ uri: 'https://github.com/rishitha957/test-repo/blob/master/audio1.mp3' });
-
-    const scoreImages = [
+      const scoreImages = [
         // 'https://github.com/rishitha957/rated-g.ai-info/assets/46604699/fdc8f05c-e1d4-469a-8717-0838a213e8ef',
         'https://github.com/rishitha957/rated-g.ai-info/assets/46604699/bf625a15-d998-43e7-b146-d96055a64ced',
         // 'https://github.com/rishitha957/rated-g.ai-info/assets/46604699/5a4b1eb2-d01a-4116-b5bd-58e98df7f38f',
         // 'https://github.com/rishitha957/rated-g.ai-info/assets/46604699/28268044-212e-4531-afbb-e861c06d1079',
         // ... more URIs for each score image
     ];
-    
-    return (
-        <View style={styles.container}>
+
+  return (
+  <View style={styles.container}>
             <View style={styles.detailsContainer}>
                 <Image style={styles.thumbnail} source={require('../assets/Tchaikovsky.jpg')} />
                 <View style={styles.artistInfoContainer}>
@@ -72,16 +111,15 @@ const AudioRecordScreen = () => {
             </View>
           <View style={styles.controlsContainer}>
             <MaterialCommunityIcons name="tune" size={24} onPress={onPressPlaceholder} />
-            <MaterialCommunityIcons name="replay" size={24} onPress={onPressPlaceholder} />
-            <TouchableOpacity style={styles.recordButton} onPress={playSound}>
-              <MaterialCommunityIcons name="record-circle" size={70} color="green" />
+            <MaterialCommunityIcons name="music-circle" size={24} onPress={playSound} />
+            <TouchableOpacity style={styles.recordButton} onPress={startRecording}>
+              <MaterialCommunityIcons name="record-rec" size={44} color="green" />
             </TouchableOpacity>
-            <MaterialCommunityIcons name="skip-previous" size={24} onPress={onPressPlaceholder} />
-            <MaterialCommunityIcons name="check" size={24} onPress={onPressPlaceholder} />
+            <MaterialCommunityIcons name="stop-circle-outline" size={24} onPress={stopRecording} />
+            <MaterialCommunityIcons name="play-circle" size={24} onPress={playRecordedAudio} />
           </View>
-
-        {/* </View> */}
-    </View>);
+    </View>
+  );
 };
 
   const styles = StyleSheet.create({

@@ -51,6 +51,31 @@ const recommendedData = [
     title: 'Title',
     imageUrl: 'https://picsum.photos/id/91/200/300',
   },
+  {
+    id: 'e',
+    title: 'Title',
+    imageUrl: 'https://picsum.photos/id/162/200/300',
+  },
+  {
+    id: 'f',
+    title: 'Title',
+    imageUrl: 'https://picsum.photos/id/178/200/300',
+  },
+  {
+    id: 'g',
+    title: 'Title',
+    imageUrl: 'https://picsum.photos/id/192/200/300',
+  },
+  {
+    id: 'h',
+    title: 'Title',
+    imageUrl: 'https://picsum.photos/id/22/200/300',
+  },
+  {
+    id: 'i',
+    title: 'Title',
+    imageUrl: 'https://picsum.photos/id/320/200/300',
+  },
   // ... more recommended items
 ];
 const recentlyPlayedData = [
@@ -73,6 +98,31 @@ const recentlyPlayedData = [
       id: 'd',
       title: 'Title',
       imageUrl: 'https://picsum.photos/id/134/200/300',
+    },
+    {
+      id: 'e',
+      title: 'Title',
+      imageUrl: 'https://picsum.photos/id/154/200/300',
+    },
+    {
+      id: 'f',
+      title: 'Title',
+      imageUrl: 'https://picsum.photos/id/162/200/300',
+    },
+    {
+      id: 'g',
+      title: 'Title',
+      imageUrl: 'https://picsum.photos/id/185/200/300',
+    },
+    {
+      id: 'h',
+      title: 'Title',
+      imageUrl: 'https://picsum.photos/id/197/200/300',
+    },
+    {
+      id: 'i',
+      title: 'Title',
+      imageUrl: 'https://picsum.photos/id/21/200/300',
     },
     // ... more recommended items
   ];
